@@ -1,6 +1,6 @@
 from werkzeug.wsgi import DispatcherMiddleware
 from spyne.server.wsgi import WsgiApplication
-from spyne import Iterable, Integer, Unicode, srpc, Application, String
+from spyne import Iterable, Integer, Unicode, srpc, Application, String, rpc
 from spyne.service import ServiceBase
 from spyne.protocol.soap import Soap11
 from spyne.protocol.http import HttpRpc
@@ -13,8 +13,8 @@ app = Flask(__name__)
 
 class Data(ServiceBase):
     
-    @srpc(_returns=Iterable(String))
-    def airData():
+    @rpc(_returns=String)
+    def airData(ctx):
         airInfo = []
         listAir_no = ['1', '2','3','4','5']
         listAir_date = ['11/12/18','11/12/18','11/12/18','11/12/18','11/12/18',]
@@ -27,11 +27,11 @@ class Data(ServiceBase):
             tempData['Humid'] = listAir_humid[i]
             airInfo.append(tempData)
         airXml = dicttoxml.dicttoxml(airInfo)
-        return airXml
+        return 'lxml'
             
     
-    @srpc(_returns=Iterable(String))
-    def myData():
+    @rpc(_returns=String)
+    def myData(ctx):
         myInfo =[]
         myTempData['Name'] = 'Thanapat Klayjamlang'
         myTempData['StudentID'] = '5801012630084'
@@ -50,6 +50,9 @@ application = Application([Data],
 app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
     '/soap': WsgiApplication(application)
 })
-
+a = Data()
+print(a.airData)
 if __name__ == '__main__':
     app.run()
+    a = Data()
+    print(a.airData)
