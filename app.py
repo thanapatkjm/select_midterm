@@ -28,7 +28,7 @@ class Data(ServiceBase):
             tempData['Humid'] = listAir_humid[i]
             airInfo.append(tempData)
         airXml = dicttoxml.dicttoxml(airInfo)
-        return 
+        return airXml
             
     
     @rpc(_returns=String)
@@ -44,7 +44,18 @@ class Data(ServiceBase):
 
     @rpc(_returns=String)
     def postmanOffice(ctx):
-        return
+        customer = []
+        customer_name = ['A','B','C']
+        customer_address = ['127 soi3','128 soi5','213 soi 28/7']
+        customer_weight = ['2','20','5']
+        for i in customer_name:
+            tempData={}
+            tempData['Name'] = customer_name[i]
+            tempData['Address'] = customer_address[i]
+            tempData['Weight'] = customer_weight[i]
+            customer.append(tempData)
+        customerXml = dicttoxml.dicttoxml(customer)
+        return customerXml
         
     
 application = Application([Data],
@@ -53,7 +64,7 @@ application = Application([Data],
     out_protocol=Soap11()
 )
 # SOAP services are distinct wsgi applications, we should use dispatcher
-# middleware to bring all aps together
+# middleware to bring all as together
 app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
     '/soap': WsgiApplication(application)
 })
