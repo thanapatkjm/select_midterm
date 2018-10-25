@@ -21,24 +21,31 @@ class Data(ServiceBase):
         listAir_temp = ['32','30','34','35','36']
         listAir_humid = ['12','13','14','15','16']
         for i in listAir_no:
+            tempData={}
             tempData['No'] = listAir_no[i]
             tempData['Date'] = listAir_date[i]
             tempData['Temp'] = listAir_temp[i]
             tempData['Humid'] = listAir_humid[i]
             airInfo.append(tempData)
         airXml = dicttoxml.dicttoxml(airInfo)
-        return 'lxml'
+        return 
             
     
     @rpc(_returns=String)
     def myData(ctx):
         myInfo =[]
+        myTempData={}
         myTempData['Name'] = 'Thanapat Klayjamlang'
         myTempData['StudentID'] = '5801012630084'
         myTempData['Hobby'] = 'Game ,Fishing ,Playing guitar'
         myInfo.append(myTempData)
         myInfoXml = dicttoxml.dicttoxml(myInfo)
         return myInfoXml
+
+    @rpc(_returns=String)
+    def postmanOffice(ctx):
+        return
+        
     
 application = Application([Data],
     tns='spyne.examples.cctv',
@@ -50,8 +57,6 @@ application = Application([Data],
 app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
     '/soap': WsgiApplication(application)
 })
-a = Data()
-print(a.airData)
 if __name__ == '__main__':
     app.run()
     a = Data()
