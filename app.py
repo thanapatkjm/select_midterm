@@ -20,7 +20,7 @@ class Data(ServiceBase):
         listAir_date = ['11/12/18','11/12/18','11/12/18','11/12/18','11/12/18',]
         listAir_temp = ['32','30','34','35','36']
         listAir_humid = ['12','13','14','15','16']
-        for i in listAir_no:
+        for i in range(5):
             tempData={}
             tempData['No'] = listAir_no[i]
             tempData['Date'] = listAir_date[i]
@@ -48,7 +48,7 @@ class Data(ServiceBase):
         customer_name = ['A','B','C']
         customer_address = ['127 soi3','128 soi5','213 soi 28/7']
         customer_weight = ['2','20','5']
-        for i in customer_name:
+        for i in range(3):
             tempData={}
             tempData['Name'] = customer_name[i]
             tempData['Address'] = customer_address[i]
