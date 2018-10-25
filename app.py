@@ -6,6 +6,7 @@ from spyne.protocol.soap import Soap11
 from spyne.protocol.http import HttpRpc
 from lxml import etree
 import dicttoxml
+import socket
 
 from flask import Flask
 
@@ -70,5 +71,12 @@ app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
 })
 if __name__ == '__main__':
     app.run()
-    a = Data()
-    print(a.airData)
+    s = socket.socket()
+    s.bind(('127.0.0.1' , 5000))
+    s.listen()
+    while True:
+        c, addr = s.accept()
+        print('Got connection from', addr)
+        print(c.recv(1024))
+        c.close()
+    
