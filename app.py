@@ -27,12 +27,19 @@ class Data(ServiceBase):
             tempData['Humid'] = listAir_humid[i]
             airInfo.append(tempData)
         airXml = dicttoxml.dicttoxml(airInfo)
+        return airXml
             
     
-##    @srpc(_returns=Iterable(String))
-##    def myData():
-####        myTempData['Name']
-
+    @srpc(_returns=Iterable(String))
+    def myData():
+        myInfo =[]
+        myTempData['Name'] = 'Thanapat Klayjamlang'
+        myTempData['StudentID'] = '5801012630084'
+        myTempData['Hobby'] = 'Game ,Fishing ,Playing guitar'
+        myInfo.append(myTempData)
+        myInfoXml = dicttoxml.dicttoxml(myInfo)
+        return myInfoXml
+    
 application = Application([Data],
     tns='spyne.examples.cctv',
     in_protocol=Soap11(validator='lxml'),
