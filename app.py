@@ -11,6 +11,7 @@ from spyne.protocol.http import HttpRpc
 import xml.etree.ElementTree as et
 
 import socket
+import csv
 
 from flask import Flask
 
@@ -31,9 +32,12 @@ class AirFormat(ComplexModel):
     airTemp = String
     airHumid = String
 
-##class PostmanFormat(ComplexModel):
-##    __namespace__ = "postform"
-    
+class PostmanFormat(ComplexModel):
+    __namespace__ = "postform"
+    customerName = String
+    customerAddr = String
+    weight = Float
+    status = String
 class Data(ServiceBase):
     
     @srpc(_returns=AirFormat)
@@ -56,20 +60,53 @@ class Data(ServiceBase):
         myInfo = [studentName,studentID,studentHobby[0],studentHobby[1],studentHobby[2]]
         return myInfo
 
-    @rpc(_returns=String)
-    def postmanOffice(ctx):
-        customer = []
-        customer_name = ['A','B','C']
-        customer_address = ['127 soi3','128 soi5','213 soi 28/7']
-        customer_weight = ['2','20','5']
-        for i in range(3):
-            tempData={}
-            tempData['Name'] = customer_name[i]
-            tempData['Address'] = customer_address[i]
-            tempData['Weight'] = customer_weight[i]
-            customer.append(tempData)
-        customerXml = dicttoxml.dicttoxml(customer)
-        return customerXml
+    @srpc(String, String, Double)
+    def addDestinationInfo(name, address, weight):
+        destInfo = [name, address, weight, 'sending']
+        with open('DeliveryInfo.csv', 'a') as csvFile:
+            writer = csv.writer(csvFile)
+            writer.writerow(destInfo)
+        csvFile.close()
+
+    @srpc(String)
+    def destinationSent(name):
+        name = "'"+name+"'"
+        status = 'sent'
+        all_row = []
+        with open('DeliveryInfo.csv') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            for row in csv_reader:
+                if len(row) < 4:
+                    continue
+                data = []
+                for each in row:
+                    data.append(each)
+                if data[0]==name:
+                    data[3] = status
+                all_row.append(data)
+            csv_file.close()
+        f = open("DeliveryInfo.csv", "w")
+        f.truncate()
+        f.close()
+
+        with open('DeliveryInfo.csv', 'a') as csvFile:
+            writer = csv.writer(csvFile)
+            for row in all_row:
+                writer.writerow(row)
+            csvFile.close()
+
+    @srpc(String ,_returns=PostmanFormat)
+    def transportStatus(name='None'):
+        with open('DeliveryInfo.csv') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            for row in csv_reader:                
+                if len(row) < 4:
+                    continue
+                data = []
+                for each in row:
+                    data.append(each)
+                if data[0]==name or data[0]=="'"+name+"'":
+                    return row
         
     
 application = Application([Data],
