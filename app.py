@@ -23,26 +23,30 @@ class StudentFormat(ComplexModel):
     Hobby1 = String
     Hobby2 = String
     Hobby3 = String
+
+class AirFormat(ComplexModel):
+    __namespace__ = "airform"
+    airNumber = String
+    airDate = String
+    airTemp = String
+    airHumid = String
+
+##class PostmanFormat(ComplexModel):
+##    __namespace__ = "postform"
     
 class Data(ServiceBase):
     
-    @rpc(_returns=String)
-    def airData(ctx):
-        airInfo = []
-        listAir_no = [1, 2,3,4,5]
+    @srpc(_returns=AirFormat)
+    def airData():
+        airxml=[]
+        listAir_no = ['1','2','3','4','5']
         listAir_date = ['11/12/18','11/12/18','11/12/18','11/12/18','11/12/18',]
         listAir_temp = ['32','30','34','35','36']
         listAir_humid = ['12','13','14','15','16']
-        for i in range(5):
-            tempData={}
-            tempData['No'] = listAir_no[i]
-            tempData['Date'] = listAir_date[i]
-            tempData['Temp'] = listAir_temp[i]
-            tempData['Humid'] = listAir_humid[i]
-            airInfo.append(tempData)
-        airXml = dicttoxml.dicttoxml(airInfo)
-        return airXml
-            
+        for i in listAir_no:
+            airInfo = [listAir_no[i],listAir_date[i],listAir_temp[i],listAir_humid[i]]
+##            airxml.append(airInfo)
+            return airInfo
     
     @srpc(_returns=StudentFormat)
     def studentData():
