@@ -1,23 +1,35 @@
 from werkzeug.wsgi import DispatcherMiddleware
 from spyne.server.wsgi import WsgiApplication
-from spyne import Iterable, Integer, Unicode, srpc, Application, String, rpc
+from spyne import Iterable, Integer, Unicode, srpc, rpc, Application, DateTime
+from spyne.model.primitive import String, Double, Integer, Time, AnyXml, AnyDict, Float
+from spyne.model.complex import ComplexModel, XmlAttribute
+from spyne.model.complex import Array
 from spyne.service import ServiceBase
 from spyne.protocol.soap import Soap11
+from spyne.protocol.xml import XmlDocument
 from spyne.protocol.http import HttpRpc
-from lxml import etree
-import dicttoxml
+import xml.etree.ElementTree as et
+
 import socket
 
 from flask import Flask
 
 app = Flask(__name__)
 
+class StudentFormat(ComplexModel):
+    __namespace__= "studentform"
+    Name = String
+    ID = String
+    Hobby1 = String
+    Hobby2 = String
+    Hobby3 = String
+    
 class Data(ServiceBase):
     
     @rpc(_returns=String)
     def airData(ctx):
         airInfo = []
-        listAir_no = ['1', '2','3','4','5']
+        listAir_no = [1, 2,3,4,5]
         listAir_date = ['11/12/18','11/12/18','11/12/18','11/12/18','11/12/18',]
         listAir_temp = ['32','30','34','35','36']
         listAir_humid = ['12','13','14','15','16']
@@ -32,16 +44,13 @@ class Data(ServiceBase):
         return airXml
             
     
-    @rpc(_returns=String)
-    def myData(ctx):
-        myInfo =[]
-        myTempData={}
-        myTempData['Name'] = 'Thanapat Klayjamlang'
-        myTempData['StudentID'] = '5801012630084'
-        myTempData['Hobby'] = 'Game ,Fishing ,Playing guitar'
-        myInfo.append(myTempData)
-        myInfoXml = dicttoxml.dicttoxml(myInfo)
-        return myInfoXml
+    @srpc(_returns=StudentFormat)
+    def studentData():
+        studentName = 'Thanapat Klayjamlang'
+        studentID = '5801012630084'
+        studentHobby = ['Game','Fishing','Playing Guitar']
+        myInfo = [studentName,studentID,studentHobby[0],studentHobby[1],studentHobby[2]]
+        return myInfo
 
     @rpc(_returns=String)
     def postmanOffice(ctx):
