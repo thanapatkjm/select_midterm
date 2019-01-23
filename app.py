@@ -38,6 +38,7 @@ class PostmanFormat(ComplexModel):
     customerAddr = String
     weight = Float
     status = String
+    
 class Data(ServiceBase):
     
     @srpc(_returns=AirFormat)
@@ -49,8 +50,8 @@ class Data(ServiceBase):
         listAir_humid = ['12','13','14','15','16']
         for i in listAir_no:
             airInfo = [listAir_no[i],listAir_date[i],listAir_temp[i],listAir_humid[i]]
-##            airxml.append(airInfo)
-            return airInfo
+            airxml.append(airInfo)
+        return airxml
     
     @srpc(_returns=StudentFormat)
     def studentData():
@@ -70,7 +71,7 @@ class Data(ServiceBase):
 
     @srpc(String)
     def destinationSent(name):
-        name = "'"+name+"'"
+##        name = "'"+name+"'"
         status = 'sent'
         all_row = []
         with open('DeliveryInfo.csv') as csv_file:
